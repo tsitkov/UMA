@@ -11,7 +11,7 @@ START TRANSACTION;
 -- 
 
 INSERT INTO system_scope_TEMP (scope, description, icon, allow_dyn_reg, default_scope, structured, structured_param_description) VALUES
-  ('openid', 'log in using your identity', 'user', true, true, false, null),
+  ('docs.kantarainitiative.org/uma/scopes/prot.json', 'log in using your identity', 'user', true, true, false, null),
   ('profile', 'basic profile information', 'list-alt', true, true, false, null),
   ('email', 'email address', 'envelope', true, true, false, null),
   ('address', 'physical address', 'home', true, true, false, null),

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.mitre.openid.connect.token;
+package org.mitre.uma.token;
 
 import java.util.Date;
 import java.util.UUID;
@@ -26,10 +26,7 @@ import org.mitre.oauth2.model.ClientDetailsEntity;
 import org.mitre.oauth2.model.OAuth2AccessTokenEntity;
 import org.mitre.oauth2.service.ClientDetailsEntityService;
 import org.mitre.openid.connect.config.ConfigurationPropertiesBean;
-import org.mitre.openid.connect.model.UserInfo;
-import org.mitre.openid.connect.service.ApprovedSiteService;
-import org.mitre.openid.connect.service.OIDCTokenService;
-import org.mitre.openid.connect.service.UserInfoService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +43,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 @Service
-public class ConnectTokenEnhancer implements TokenEnhancer {
+public class UmaTokenEnhancer implements TokenEnhancer {
 
-	Logger logger = LoggerFactory.getLogger(ConnectTokenEnhancer.class);
+	Logger logger = LoggerFactory.getLogger(UmaTokenEnhancer.class);
 
 	@Autowired
 	private ConfigurationPropertiesBean configBean;
@@ -58,22 +55,6 @@ public class ConnectTokenEnhancer implements TokenEnhancer {
 
 	@Autowired
 	private ClientDetailsEntityService clientService;
-
-	@Autowired
-	private ApprovedSiteService approvedSiteService;
-
-	@Autowired
-	private UserInfoService userInfoService;
-
-	@Autowired
-	private OIDCTokenService connectTokenService;
-
-	@Autowired
-	private JWKSetCacheService encryptors;
-
-	@Autowired
-	private SymmetricCacheService symmetricCacheService;
-
 
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken,	OAuth2Authentication authentication) {
@@ -85,8 +66,6 @@ public class ConnectTokenEnhancer implements TokenEnhancer {
 		ClientDetailsEntity client = clientService.loadClientByClientId(clientId);
 
 		JWTClaimsSet claims = new JWTClaimsSet();
-
-		claims.setAudience(Lists.newArrayList(clientId));
 
 		claims.setIssuer(configBean.getIssuer());
 
@@ -104,38 +83,13 @@ public class ConnectTokenEnhancer implements TokenEnhancer {
 
 		token.setJwt(signed);
 
-		/**
-		 * Authorization request scope MUST include "openid" in OIDC, but access token request
-		 * may or may not include the scope parameter. As long as the AuthorizationRequest
-		 * has the proper scope, we can consider this a valid OpenID Connect request. Otherwise,
-		 * we consider it to be a vanilla OAuth2 request.
-		 * 
-		 * Also, there must be a user authentication involved in the request for it to be considered
-		 * OIDC and not OAuth, so we check for that as well.
-		 */
-		if (originalAuthRequest.getScope().contains("openid")
-				&& !authentication.isClientOnly()) {
-
-			String username = authentication.getName();
-			UserInfo userInfo = userInfoService.getByUsernameAndClientId(username, clientId);
-
-			if (userInfo != null) {
-
-				OAuth2AccessTokenEntity idTokenEntity = connectTokenService.createIdToken(client,
-						originalAuthRequest, claims.getIssueTime(),
-						userInfo.getSub(), token);
-
-				// attach the id token to the parent access token
-				token.setIdToken(idTokenEntity);
-			} else {
-				// can't create an id token if we can't find the user
-				logger.warn("Request for ID token when no user is present.");
-			}
-		}
+                if (!originalAuthRequest.getScope().contains("docs.kantarainitiative.org/uma/scopes/prot.json")) {
+	            logger.warn("PAT issuance - bad scope.");
+                    return null;
+                }
 
 		return token;
 	}
-
 	public ConfigurationPropertiesBean getConfigBean() {
 		return configBean;
 	}
@@ -159,5 +113,4 @@ public class ConnectTokenEnhancer implements TokenEnhancer {
 	public void setClientService(ClientDetailsEntityService clientService) {
 		this.clientService = clientService;
 	}
-
 }

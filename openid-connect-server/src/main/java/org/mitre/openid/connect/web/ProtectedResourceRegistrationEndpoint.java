@@ -55,6 +55,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonSyntaxException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+
 @Controller
 @RequestMapping(value = "resource")
 public class ProtectedResourceRegistrationEndpoint {
