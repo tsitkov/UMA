@@ -57,7 +57,8 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <configuration>
                 	<webAppConfig>
-                	    <contextPath>/openid-connect-server-webapp</contextPath>
+			    <contextPath>/uma-server</contextPath>
+                	    <!-- <contextPath>/openid-connect-server-webapp</contextPath> -->
                 	</webAppConfig>
                 </configuration>
             </plugin>

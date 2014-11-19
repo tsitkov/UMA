@@ -37,8 +37,9 @@
     <modules>
     	<module>openid-connect-common</module>
     	<module>openid-connect-client</module>
-		<module>openid-connect-server</module>
-    <module>openid-connect-server-webapp</module>
+	<module>openid-connect-server</module>
+    	<module>openid-connect-server-webapp</module>
+<!--	<module>uma-rs</module> -->
   </modules>
     
 	<scm>
@@ -59,6 +60,11 @@
 			<name>Amanda Anganes</name>
 			<email>aanganes@mitre.org</email>
 		</developer>
+		<developer>
+ 			<id>tsitkov</id>
+ 			<name>Zhanna Tsitkov</name>
+ 			<email>tsitkova@mit.edu</email>
+ 		</developer>
 	</developers>
 
 	<mailingLists>
@@ -75,7 +81,7 @@
         <org.slf4j-version>1.7.7</org.slf4j-version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
     </properties>
-    <description>A reference implementation of OpenID Connect (http://openid.net/connect/) and OAuth 2.0 built on top of Java, Spring, and Spring Security. The project contains a fully functioning server, client, and utility library.</description>
+    <description>A reference implementation of OpenID Connect (http://openid.net/connect/) and OAuth 2.0 built on top of Java, Spring, and Spring Security. The project contains a fully functioning Authorization server, client, UMA resource server and utility library.</description>
     <url>https://github.com/mitreid-connect</url>
     <build>
     	<pluginManagement>
@@ -266,7 +272,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.7</version>
-            <scope>test</scope>
+        <!-- Zh    <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
