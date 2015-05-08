@@ -1,5 +1,6 @@
 --
 -- Tables for OIDC Server functionality, MySQL
+-- Corresponding release version of MitreID Connect: 1.2.x
 --
 
 CREATE TABLE IF NOT EXISTS access_token (
